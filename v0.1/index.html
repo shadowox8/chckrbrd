@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8" />
+	<title>Title.</title>
+	<script src="jquery-1.9.1.js"></script>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<div id="hax"></div>
+	<script>
+		window.document.onkeyup = func;
+		
+		var a = [];
+		var b = [];
+		var x_max = 5;
+		var y_max = 5;
+		var size = $(window).height() * .8;
+		//var size = 200;
+		for(var y = 0; y < y_max; y++) {
+			a[y] = b[y] = [];
+			for(var x = 0; x < x_max; x++) {
+				a[y][x] = b[y][x] = document.createElement('div');
+				a[y][x].setAttribute('class', 'chckr');
+				a[y][x].myid = x + '.' + y;
+				//a[y][x].innerHTML = a[y][x].myid;
+				if(x == 0) {
+					$(a[y][x]).css('clear', 'both');
+				}
+				$(a[y][x]).css('height', size);
+				$(a[y][x]).css('width', size);
+				$(a[y][x]).css('background', '#111122 url(images/'+a[y][x].myid +'.jpg) no-repeat center center');
+				$(a[y][x]).css('background-size', 'cover');
+				document.getElementById('hax').appendChild(a[y][x]);
+			}
+		}
+		
+		//$(b[2][2]).css('background', 'url(images/'+b[2][2].myid +'.jpg) no-repeat center center');
+		//$(b[2][2]).css('background-size', 'cover');
+		
+		// comment out if you set a static size and what to see everything
+		$('#hax').css('width', (size + 10) * 6);
+		$('#hax').css('height', (size + 10) * 6);
+		$('#hax').css('left', -(size + 10) * 5/2 + $(window).width()/2);
+		$('#hax').css('top', -(size + 10) * 5/2 + $(window).height()/2);
+		
+		function state() {
+			var retval = '';
+			for(var y = 0; y < y_max; y++) {
+				for(var x = 0; x < x_max; x++) {
+					retval += b[y][x].myid + '  ';
+				}
+				retval += '\n';
+			}
+			console.log(retval);
+		}
+		
+		function shift_left(row) {
+			// remove last node
+			var node = document.getElementById('hax').removeChild(row.pop());
+			// add to front
+			row.unshift(document.getElementById('hax').insertBefore(node, row[0]));
+		}
+		
+		// split because of asynchronous variable bullsheet
+		function animate_left() {
+			for(var y = 0; y < y_max; y++) {
+				animate_left_helper(y);
+			}
+		}
+		
+		function animate_left_helper(y) {
+			$(b[y][0]).animate(
+				{'margin-left': size + 10},
+				function() {
+					$(b[y][0]).css('clear', 'none');
+					shift_left(b[y]);
+					$(b[y][0]).css('clear', 'both');
+					$(this).css('margin-left', '0px');
+				}
+			);
+		}
+		
+		function shift_right(row) {
+			// remove first node
+			var node = document.getElementById('hax').removeChild(row.shift());
+			// add to end
+			row.push(document.getElementById('hax').insertBefore(node, row[row.length - 1].nextSibling));
+		}
+		
+		function animate_right() {
+			for(var y = 0; y < y_max; y++) {
+				animate_right_helper(y);
+			}
+		}
+		
+		function animate_right_helper(y) {
+			$(b[y][0]).animate(
+				{'margin-left': -(size + 10)},
+				function() {
+					$(b[y][0]).css('clear', 'none');
+					shift_right(b[y]);
+					$(b[y][0]).css('clear', 'both');
+					$(this).css('margin-left', '0px');
+				}
+			);
+		}
+		
+		function shift_down(x) {
+			var node = document.getElementById('hax').removeChild(b[0][x]);
+			document.getElementById('hax').appendChild(node);
+			
+			if(x == x_max - 1) {
+				b.push(b.shift());
+			}
+		}
+		
+		function animate_down() {
+			for(var x = 0; x < x_max; x++) {
+				animate_down_helper(x);
+			}
+		}
+		
+		function animate_down_helper(x) {
+			$(b[0][x]).animate(
+				{'margin-top': -(size + 10)},
+				function() {
+					shift_down(x);
+					$(this).css('margin-top', '0px');
+				}
+			);
+		}
+		
+		function shift_up(x) {
+			var node = document.getElementById('hax').removeChild(b[y_max - 1][x]);
+			document.getElementById('hax').insertBefore(node, b[0][0]);
+			
+			if(x == x_max - 1) {
+				b.unshift(b.pop());
+			}
+		}
+		
+		function animate_up() {
+			for(var x = 0; x < x_max; x++) {
+				animate_up_helper(x);
+			}
+		}
+		
+		function animate_up_helper(x) {
+			$(b[0][x]).animate(
+				{'margin-top': size + 10},
+				function() {
+					shift_up(x);
+					$(this).css('margin-top', '0px');
+				}
+			);
+		}
+		
+		function func(e) {
+			// right
+			if(e.keyCode == 39) {
+				animate_right();
+			}
+			// left
+			if(e.keyCode == 37) {
+				animate_left();
+			}
+			// down
+			if(e.keyCode == 40) {
+				animate_down();
+			}
+			// up
+			if(e.keyCode == 38) {
+				animate_up();
+			}
+		}
+	</script>
+</body>
+</html>

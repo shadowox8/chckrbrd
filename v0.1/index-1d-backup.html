@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8" />
+	<title>Title.</title>
+	<script src="jquery-1.9.1.js"></script>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<script>
+		window.document.onkeyup = func;
+		
+		var a = [];
+		var b = [];
+		var c = 5;
+		for(var i = 0; i < c; i++) {
+			// initially: a[i] == b[i]
+			a[i] = b[i] = document.createElement('div');
+			a[i].setAttribute('class', 'chckr');
+			a[i].myid = i;
+			a[i].innerHTML = a[i].myid;
+			document.body.appendChild(a[i]);
+		}
+		
+		function shift_left() {
+			var node = document.body.removeChild(b.pop());
+			b.unshift(document.body.insertBefore(node, b[0]));
+		}
+		
+		function shift_right() {
+			var node = document.body.removeChild(b.shift());
+			b.push(document.body.insertBefore(node, b[b.length-1].nextSibling));
+		}
+		
+		function animate_left() {
+			$('.chckr:first').animate(
+				{'margin-left': '210px'},
+				function() {
+					shift_left();
+					$(this).css('margin-left', '0px');
+				}
+			);
+		}
+		
+		function animate_right() {
+			$('.chckr:first').animate(
+				{'margin-left': '-210px'},
+				function() {
+					shift_right();
+					$(this).css('margin-left', '0px');
+				}
+			);
+		}
+		
+		function func(e) {
+			// right
+			if(e.keyCode == 39) {
+				animate_right();
+			}
+			// left
+			if(e.keyCode == 37) {
+				animate_left();
+			}
+		}
+	</script>
+</body>
+</html>
