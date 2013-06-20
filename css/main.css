@@ -60,6 +60,18 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+.chckr {
+	/* DON'T CHANGE */
+	display: block;
+	position: absolute;
+	/* EXIT DANGER ZONE */
+
+	background-color: #AAA;
+}
+
+#chckr_container {
+	/* you'll thank me later */
+}
 
 
 
