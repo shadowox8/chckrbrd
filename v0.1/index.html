@@ -152,8 +152,20 @@
 				function() {
 					shift_up(x);
 					$(this).css('margin-top', '0px');
+					//delete
+					func2();
+					console.log(func2c);
 				}
 			);
+		}
+		
+		//delete
+		var func2c = 0;
+		function func2() {
+			if(++func2c == 5) {
+				window.document.onkeyup = func;
+				func2c = 0;
+			}
 		}
 		
 		function func(e) {
@@ -171,6 +183,7 @@
 			}
 			// up
 			if(e.keyCode == 38) {
+				window.document.onkeyup = null; //delete
 				animate_up();
 			}
 		}
